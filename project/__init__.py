@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask,render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 app=Flask(__name__)
@@ -13,3 +13,7 @@ from project.routes.dashboard import panel
 
 app.register_blueprint(panel)
 app.register_blueprint(admin)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("error_pages/404.html")
