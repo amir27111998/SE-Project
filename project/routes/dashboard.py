@@ -7,6 +7,7 @@
 
 from flask import Blueprint,render_template,session
 from project.controllers.admin import login_required
+from project.forms.analyze import Analyze
 panel=Blueprint('dashboard',__name__,url_prefix='/dashboard',static_folder='../static',static_url_path="/static")
 
 @panel.route('/')
@@ -28,3 +29,10 @@ def profile():
 @login_required
 def create():
     return render_template("user_registration.html")
+
+@panel.route('/analyzer')
+@login_required
+def analyze():
+    form=Analyze()
+    return render_template("analyze.html",form=form)
+

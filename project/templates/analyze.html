@@ -1,0 +1,119 @@
+{%extends "Master.html"%}
+{% block title %}Analyzer{% endblock %}
+{% block content %}
+    <!-- Header -->
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+      <div class="container-fluid">
+        <div class="header-body">
+          <!-- Card stats -->
+          <div class="row">
+
+            <div class="col">
+              <div class="card mb-4 mb-xl-0">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-12">
+                      <h3 class="card-title text-uppercase text-dark">Upload Video For Analysis</h3>
+                      </div>
+                       <div class="col-12">
+                         <form method="post">
+                          {{form.hidden_tag()}}
+                         <div class="form-group">
+                            <div class="custom-file">
+                          <!--<input type="file" class="" id="customFile">-->
+                              {{form.Video(class_='custom-file-input')}}
+                              <label class="custom-file-label" for="customFile">Choose file</label>
+                            </div>
+
+                         </div>
+                         {{form.submit(class_='btn btn-primary')}}
+                           </form>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Page content -->
+    <div class="container-fluid mt--7">
+      <!-- Table -->
+      <div class="row">
+        <div class="col">
+          <div class="card shadow">
+
+            <div class="card-body">
+              <div class="row">
+                <div class="col-12">
+                <h3 class="text-dark" id="states">States</h3>
+                </div>
+                  <div class="col-12">
+                  <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated progress-bar" style="width:50%"></div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="jumbotron" style="height:500px">
+
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="row">
+                    <!--Known People-->
+                    <div class="col-12">
+                    <h2 class="text-dark">Known Peoples</h2>
+                    </div>
+                   <div class="col-xl-3 col-lg-4 col-md-10 col-sm-6">
+                      <div class="card text-muted" style="box-shadow: 0px 2px 17px 0px rgba(0,0,0,0.75);">
+                        <div class="card-body">
+                        <img class="card-img-top img-fluid" src="static/images/profile_pics/alisyedamir2018@gmail.com.jpg" />
+                        </div>
+                        <div class="card-footer">
+                          <center>
+                          <p class="text-dark">People Name</p>
+                          <a href="#" class="btn btn-outline-primary">View Profile</a>
+                            </center>
+                        </div>
+
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+
+                <div class="col-12 mt-7">
+                  <div class="row">
+                    <!--Known People-->
+                    <div class="col-12">
+                    <h2 class="text-dark">Unknown Peoples</h2>
+                    </div>
+                   <div class="col-xl-3 col-lg-4 col-md-10 col-sm-6">
+                      <div class="card text-muted" style="box-shadow: 0px 2px 17px 0px rgba(0,0,0,0.75);">
+                        <div class="card-body">
+                        <img class="card-img-top img-fluid" src="static/images/profile_pics/alisyedamir2018@gmail.com.jpg" />
+                        </div>
+                        <div class="card-footer">
+                          <center>
+                          <p class="text-dark">Time In Video</p>
+                            </center>
+                        </div>
+
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+  </div>
+{% endblock %}
