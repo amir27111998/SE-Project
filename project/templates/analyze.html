@@ -16,18 +16,22 @@
                       <h3 class="card-title text-uppercase text-dark">Upload Video For Analysis</h3>
                       </div>
                        <div class="col-12">
-                         <form method="post">
-                          {{form.hidden_tag()}}
+
                          <div class="form-group">
                             <div class="custom-file">
-                          <!--<input type="file" class="" id="customFile">-->
-                              {{form.Video(class_='custom-file-input')}}
+                              <input type="file" name="image"  class='custom-file-input' accept=".mp4" id='img_data'>
                               <label class="custom-file-label" for="customFile">Choose file</label>
                             </div>
-
+                              <span class="text-danger" id="img_err"></span>
                          </div>
-                         {{form.submit(class_='btn btn-primary')}}
-                           </form>
+                         <div class="row">
+                           <div class="col-2">
+                           <input type="submit" class="btn btn-primary" value="Analyze" id='upload' />
+                            </div>
+                           <div class="col-2">
+                            <span class="ml-2 spinner-border text-primary" id="uploading"></span>
+                           </div>
+                         </div>
                       </div>
                   </div>
                 </div>
@@ -38,7 +42,7 @@
       </div>
     </div>
     <!-- Page content -->
-    <div class="container-fluid mt--7">
+    <div class="container-fluid mt--7" id="analyzerBlock">
       <!-- Table -->
       <div class="row">
         <div class="col">
@@ -51,15 +55,37 @@
                 </div>
                   <div class="col-12">
                   <div class="progress">
-                    <div class="progress-bar progress-bar-striped progress-bar-animated progress-bar" style="width:50%"></div>
+                    <div class="progress-bar progress-bar-striped progress-bar-animated progress-bar" id="progress"></div>
                   </div>
                 </div>
                 <div class="col-12">
-                  <div class="jumbotron" style="height:500px">
+                  <div class="bg-secondary" style="height:500px">
+
+<!--Carousel starts-->
+<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+  <div class="carousel-inner" id="frames">
+
+
+  </div>
+  <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a>
+</div>
+
+
+<!--Carousel ends-->
+
+
+
 
                   </div>
                 </div>
-                <div class="col-12">
+                <div class="col-12" id="known">
                   <div class="row">
                     <!--Known People-->
                     <div class="col-12">
@@ -84,7 +110,7 @@
                 </div>
 
 
-                <div class="col-12 mt-7">
+                <div class="col-12 mt-7" id="unknown">
                   <div class="row">
                     <!--Known People-->
                     <div class="col-12">
@@ -116,4 +142,143 @@
       </div>
 
   </div>
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+
+
+
+
+
+    //Hide full analyzer block
+    $("#analyzerBlock").css({display:'none'});
+    $("#known").css({display:'none'});
+    $("#unknown").css({display:'none'});
+    //Image field change erroe hide
+    $("#img_data").change(function(){
+      $('#img_err').text("");
+    });
+
+    //loading icon is hidden
+    $("#uploading").css({display:'none'});
+    var res="";//response global variable
+    var progress=0;//progress bar value
+    //analyze button
+    $("#upload").click(function(){
+    //image file can't be empty
+      if ($("#img_data").val()!=""){
+       var ImageData=$("#img_data")[0].files[0];
+      var size=(ImageData.size/1024)/1024;//size of a file
+
+      //condition for size
+      if(size>=3)
+      {
+         $('#img_err').text("Video size should be less than 3 MB");
+         return;
+      }
+
+      $(this).attr('disabled',"true");  //button will be locked
+      $("#uploading").css({display:'block'});//uploading icon will be enabled
+
+      var image=new FormData();
+      image.append("image",ImageData);
+      console.log("Ajax");
+
+      //POST image file
+
+       $.ajax({
+        type: 'POST',
+        url: '/dashboard/analyzer',
+        processData: false,
+        contentType: false,
+        data:image,
+        success: function (response) {
+            if(response){
+            console.log(response);
+                  $("#uploading").css({display:'none'});//uploading icon will be disabled
+                  $("#states").text("Video Uploaded"); //States change
+                  res=response;//getting file name
+                  $("#analyzerBlock").css({display:'block'});//enable analyzer block but not known and unknown
+
+                  //Updating Progress Bar
+                  for(var i=0;i<=20;i++){
+                      setTimeout(function(){
+                          $("#progress").css({width:progress+'%'});
+                          progress++;
+                          },800);
+                   }
+
+                //Getting the image name
+                  $.ajax({
+                      type:"GET",
+                      url:'/dashboard/capture?name='+res,
+                      success:function(response){
+                          if(response){
+                            //Updating Status
+                            $("#states").text("Frames Captured");
+
+                            var data=JSON.parse(response); //Response data image frames
+                            //append each frame to slider
+                            var divLoc=$("#frames");
+                            $.each(data,function(ind,value){
+                                var active=''
+                                if(ind==0){active='active'}
+                                var elem="<div class='carousel-item "+active+" '><img style='height:500px' src='static/images/frames/"+value+"' class='d-block w-100'></div>";
+                                divLoc.append(elem);
+
+                            });
+
+                            //update progress
+                            for(var i=0;i<=20;i++){
+                                setTimeout(function(){
+                                    $("#progress").css({width:progress+'%'});
+                                    progress++;
+                                    },800);
+                             }
+
+                          }
+
+                      },
+                      error:function(err){
+                          console.log(err);
+                      }
+                  });
+
+                //End Get Frames
+
+
+
+
+
+
+
+
+
+            };
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+
+
+
+
+
+    }
+    else{
+        //video not selected error
+      $('#img_err').text("Please select a video");
+    }
+    });
+
+
+
+
+
+  });
+
+</script>
+
+
 {% endblock %}
