@@ -171,9 +171,9 @@
       var size=(ImageData.size/1024)/1024;//size of a file
 
       //condition for size
-      if(size>=6)
+      if(size>=4)
       {
-         $('#img_err').text("Video size should be less than 6 MB");
+         $('#img_err').text("Video size should be less than 4 MB");
          return;
       }
 
@@ -235,6 +235,29 @@
                                     progress++;
                                     },800);
                              }
+
+
+
+
+                             //Getting Matching Faces
+
+                             $.ajax({
+                                url:'/dashboard/compare',
+                                type:'GET',
+                                success:function(response){
+                                    console.log(response);
+                                },
+                                error:function(err){
+                                    console.log(err);
+                                }
+                             });
+
+
+
+
+
+
+                             //ending Matching Faces
 
                           }
 

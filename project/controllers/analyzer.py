@@ -1,8 +1,7 @@
 import os,time
-import cv2
+import cv2,pickle
 from flask import json
 import numpy as np
-from PIL import Image
 import face_recognition as fr
 
 def create_path(timesatmp):
@@ -35,7 +34,7 @@ def captureFrames(filename):
     facespath = "project/static/images/faces/"
     file=filename+".mp4"
     video=cv2.VideoCapture("project/static/videos/"+file)
-    img=0;counter=4;faces=0
+    img=0;counter=10;faces=0
     classifier = cv2.CascadeClassifier("project/haarcascade_frontalface_default.xml")
     listImg={}
     while video.isOpened():
@@ -57,7 +56,34 @@ def captureFrames(filename):
                     cv2.imwrite(fullpath,frame)
                     listImg[img]=name
                     img+=1
-                counter=4
+                counter=10
             counter-=1
     video.release()
     return json.dumps(listImg)
+
+def compareFaces():
+    data={}
+    knowns={}
+    with open("project/dataset.dat","rb") as file:
+        data=pickle.load(file)
+
+    ##data
+    encodings = []
+    names = []
+    for (name, encode) in data.items():
+        encodings.append(encode)
+        names.append(name)
+    encodings = np.array(encodings)
+    knowns={}
+    for faceImage in os.listdir("project/static/images/faces/"):
+        image=cv2.imread("project/static/images/faces/"+faceImage)
+        if fr.face_encodings(image)!=[]:
+            faceEncoding=fr.face_encodings(image)[0]
+            temp=fr.compare_faces(encodings,faceEncoding)
+            if True in temp:
+                index=temp.index(True)
+                os.remove("project/static/images/faces/" + faceImage)
+                if index not in list(knowns.keys()):
+                    knowns[index]=names[index]
+
+    return json.dumps(knowns)

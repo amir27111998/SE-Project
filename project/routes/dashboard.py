@@ -7,7 +7,7 @@
 
 from flask import Blueprint,render_template,request
 from project.controllers.admin import login_required
-from project.controllers.analyzer import create_path,deleteVideos,captureFrames,deleteFramesFaces
+from project.controllers.analyzer import create_path,deleteVideos,captureFrames,deleteFramesFaces,compareFaces
 import time
 panel=Blueprint('dashboard',__name__,url_prefix='/dashboard',static_folder='../static',static_url_path="/static")
 
@@ -50,3 +50,9 @@ def capture():
     if request.method=="GET":
         video=request.args.get("name")
         return captureFrames(video)
+
+@panel.route('/compare',methods=['GET'])
+@login_required
+def compare():
+    if request.method=="GET":
+        return compareFaces()
