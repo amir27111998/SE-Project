@@ -5,7 +5,7 @@
 #Analyzer
 #Add Users
 
-from flask import Blueprint,render_template,request
+from flask import Blueprint,render_template,request,make_response
 from project.controllers.admin import login_required
 from project.controllers.analyzer import create_path,deleteVideos,captureFrames,deleteFramesFaces
 import os,time
