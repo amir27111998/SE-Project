@@ -5,12 +5,10 @@
 #Analyzer
 #Add Users
 
-from flask import Blueprint,render_template,request,make_response
+from flask import Blueprint,render_template,request
 from project.controllers.admin import login_required
 from project.controllers.analyzer import create_path,deleteVideos,captureFrames,deleteFramesFaces
-import os,time
-import numpy as np
-
+import time
 panel=Blueprint('dashboard',__name__,url_prefix='/dashboard',static_folder='../static',static_url_path="/static")
 
 @panel.route('/')

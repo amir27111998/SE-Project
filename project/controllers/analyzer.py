@@ -35,7 +35,8 @@ def captureFrames(filename):
     facespath = "project/static/images/faces/"
     file=filename+".mp4"
     video=cv2.VideoCapture("project/static/videos/"+file)
-    img=0;counter=10;faces=0
+    img=0;counter=4;faces=0
+    classifier = cv2.CascadeClassifier("project/haarcascade_frontalface_default.xml")
     listImg={}
     while video.isOpened():
         ret,frame=video.read()
@@ -43,19 +44,20 @@ def captureFrames(filename):
             break
         else:
             if counter==0:
-                ff=fr.face_locations(frame)
-                if ff != []:
+                gray=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+                ff=classifier.detectMultiScale(gray,1.3,4)
+                if ff != ():
                     name="{}.jpg".format(img)
                     fullpath = path+name
-                    for rec in ff:
-                        top, right, bottom, left=rec
-                        cv2.imwrite(facespath+"{}.jpg".format(faces), frame[top-5:bottom+5,left:right])
-                        cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
+                    for x,y,w,h in ff:
+                        cropped=cv2.resize(frame[y:y+h,x:x+w],(120,120))
+                        cv2.imwrite(facespath+"{}.jpg".format(faces),cropped)
+                        cv2.rectangle(frame, (x,y),(x+w, y+h), (0, 0, 255), 2)
                         faces+=1
                     cv2.imwrite(fullpath,frame)
                     listImg[img]=name
                     img+=1
-                counter=10
+                counter=4
             counter-=1
     video.release()
     return json.dumps(listImg)
