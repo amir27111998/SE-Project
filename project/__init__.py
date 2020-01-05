@@ -7,7 +7,7 @@ app.config["SQLALCHEMY_DATABASE_URI"]="mysql+pymysql://root:@127.0.0.1/project"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]=False
 db=SQLAlchemy(app)
 Migrate(app,db)
-from project.models import User,Role
+from project.models import User,Role,Peoples,Links,Logs,Images
 from project.routes.admin import admin
 from project.routes.dashboard import panel
 
