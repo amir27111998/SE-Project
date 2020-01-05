@@ -85,27 +85,16 @@
 
                   </div>
                 </div>
-                <div class="col-12" id="known">
+
+                <div class="col-12 mt-7" id="known">
                   <div class="row">
                     <!--Known People-->
                     <div class="col-12">
                     <h2 class="text-dark">Known Peoples</h2>
                     </div>
-                   <div class="col-xl-3 col-lg-4 col-md-10 col-sm-6">
-                      <div class="card text-muted" style="box-shadow: 0px 2px 17px 0px rgba(0,0,0,0.75);">
-                        <div class="card-body">
-                        <img class="card-img-top img-fluid" src="static/images/profile_pics/alisyedamir2018@gmail.com.jpg" />
-                        </div>
-                        <div class="card-footer">
-                          <center>
-                          <p class="text-dark">People Name</p>
-                          <a href="#" class="btn btn-outline-primary">View Profile</a>
-                            </center>
-                        </div>
+                  </div>
+                     <div class="row" id="profile">
 
-                      </div>
-
-                    </div>
                   </div>
                 </div>
 
@@ -116,20 +105,9 @@
                     <div class="col-12">
                     <h2 class="text-dark">Unknown Peoples</h2>
                     </div>
-                   <div class="col-xl-3 col-lg-4 col-md-10 col-sm-6">
-                      <div class="card text-muted" style="box-shadow: 0px 2px 17px 0px rgba(0,0,0,0.75);">
-                        <div class="card-body">
-                        <img class="card-img-top img-fluid" src="static/images/profile_pics/alisyedamir2018@gmail.com.jpg" />
-                        </div>
-                        <div class="card-footer">
-                          <center>
-                          <p class="text-dark">Time In Video</p>
-                            </center>
-                        </div>
+                   <div class="row mb-5" id="unknownProfile">
 
-                      </div>
-
-                    </div>
+                  </div>
                   </div>
                 </div>
 
@@ -246,6 +224,96 @@
                                 type:'GET',
                                 success:function(response){
                                     console.log(response);
+                                    var data=JSON.parse(response);
+                                    $("#known").css({display:'block'});
+                                    var parent=$("#profile");
+                                    //for each loop
+                                    if(data!={}){
+                                    $("#states").text("Recognized Faces");
+                                    $.each(data,function(ind,value){
+                                    var elem=`<div class='col-xl-3 col-lg-4 col-md-10 col-sm-6'>
+                                      <div class='card text-muted' style='box-shadow: 0px 2px 17px 0px rgba(0,0,0,0.75);'>
+                                        <div class='card-body'>
+                                        <img class='card-img-top img-fluid' src='static/images/peoples/`+value[0]+`.jpg' />
+                                        </div>
+                                        <div class='card-footer'>
+                                          <center>
+                                          <p class='text-dark'>`+value[1]+`</p>
+                                          <a href='/peopleProfile?id=`+value[0]+`' class='btn btn-outline-primary'>View Profile</a>
+                                            </center>
+                                        </div>
+
+                                      </div>
+
+                                    </div>`;
+
+                                    parent.append(elem);
+                                    });}
+
+                                    else{
+                                        $("#states").text("No Faces Detected");
+                                    }
+
+                                    //update progress
+                                    for(var i=0;i<=20;i++){
+                                        setTimeout(function(){
+                                            $("#progress").css({width:progress+'%'});
+                                            progress++;
+                                            },800);
+                                     }
+
+
+                                    //Getting the unkowns
+                                        $.ajax({
+                                            url:'/dashboard/unknown',
+                                            type:'GET',
+                                            success:function(response){
+                                                var data=JSON.parse(response);
+                                                $("#unknown").css({'display':'block'});
+                                                var unPro=$("#unknownProfile");
+                                                if(data.result.length>0){
+                                                console.log(data.result);
+                                                $.each(data.result,function(ind,value){
+                                                    var elem=`<div class='col-xl-3 col-lg-4 col-md-10 col-sm-6'>
+                                                                  <div class='card text-muted' style='box-shadow: 0px 2px 17px 0px rgba(0,0,0,0.75);'>
+                                                                    <div class='card-body'>
+                                                                    <img class='card-img-top img-fluid' src='static/images/faces/`+value+`' />
+                                                                    </div>
+                                                                    <div class='card-footer'>
+                                                                      <center>
+                                                                      <p class='text-dark'>Unknown</p>
+                                                                        </center>
+                                                                    </div>
+
+                                                                  </div>
+
+                                                                </div>`;
+                                                        unPro.append(elem);
+                                                $("#states").text("Unknowns Collected");
+
+                                                });
+
+                                                }else{
+                                                $("#states").text("No Unknowns Found");
+                                                }
+
+                                            //update progress
+                                    for(var i=0;i<=20;i++){
+                                        setTimeout(function(){
+                                            $("#progress").css({width:progress+'%'});
+                                            progress++;
+                                            },800);
+                                     }
+
+                                            },
+                                            error:function(err){
+                                                console.log(err);
+                                            }
+                                        });
+                                    //End
+
+
+
                                 },
                                 error:function(err){
                                     console.log(err);

@@ -1,8 +1,10 @@
 import os,time
 import cv2,pickle
-from flask import json
+from flask import json,session
 import numpy as np
 import face_recognition as fr
+from project.models import Peoples,Images,Links,Logs,PeopleLinks
+from project import db
 
 def create_path(timesatmp):
     path=os.path.abspath("project/static/videos/")
@@ -34,6 +36,9 @@ def captureFrames(filename):
     facespath = "project/static/images/faces/"
     file=filename+".mp4"
     video=cv2.VideoCapture("project/static/videos/"+file)
+    id=json.loads(session["USER"])['id']
+    db.session.add(Logs(userID=id))
+    db.session.commit()
     img=0;counter=10;faces=0
     classifier = cv2.CascadeClassifier("project/haarcascade_frontalface_default.xml")
     listImg={}
@@ -65,7 +70,7 @@ def captureFrames(filename):
 def compareFaces():
     data={}
     knowns={}
-    with open("project/dataset.dat","rb") as file:
+    with open("datasetEncodings.dat","rb") as file:
         data=pickle.load(file)
 
     ##data
@@ -85,6 +90,60 @@ def compareFaces():
                 index=temp.index(True)
                 os.remove("project/static/images/faces/" + faceImage)
                 if index not in list(knowns.keys()):
-                    knowns[index]=names[index]
-
+                    people=Peoples.query.filter_by(id=names[index]).all()[0]
+                    knowns[index]=[people.id,people.fullname]
     return json.dumps(knowns)
+
+def unknownFaces():
+    folder="project/static/images/faces/"
+    encoding=[]
+    result=[]
+    file=""
+    for file in os.listdir(folder)[:1]:
+        name=cv2.imread(folder+file)
+        if fr.face_encodings(name)!=[]:
+            check=fr.face_encodings(name)[0]
+            encoding.append(check)
+    encoding=np.array(encoding)
+    if file!="":
+        result.append(file)
+    for f in os.listdir(folder):
+        name = cv2.imread(folder + f)
+        if fr.face_encodings(name) != []:
+            check = fr.face_encodings(name)
+            cond=fr.compare_faces(encoding,check)
+            if cond!=[]:
+                if False in cond:
+                    encoding=[]
+                    encoding.append(fr.face_encodings(name)[0])
+                    encoding=np.array(encoding)
+                    result.append(f)
+    return result
+
+
+def saveEncodings():
+    path = 'project/static/images/peoples/'
+    data = {}
+    peoples=Peoples.query.all()
+    for people in peoples:
+        img=Images.query.filter_by(peopleID=people.id).all()[0]
+        file=cv2.imread(path+img.imageName)
+        top,right,bottom,left=fr.face_locations(file)[0]
+        face=file[top:bottom,left:right]
+        face=cv2.resize(face,(120,120))
+        data[people.id]=fr.face_encodings(face)[0]
+    with open('datasetEncodings.dat','wb') as f:
+        pickle.dump(data,f)
+    return 1
+
+# def configureEncodings(fullname,email,description,phone,links={}):
+#     peoplesImages=Peoples(fullname=fullname,email=email,description=description,phone=phone)
+#     db.session.add(peoplesImages)
+#     db.session.commit()
+#     images=Images(imageName="{}.jpg".format(peoplesImages.id),peopleID=peoplesImages.id)
+#     db.session.add(images)
+#     db.session.commit()
+#     for (key,value) in links:
+#         url=PeopleLinks.insert().values(peoplesId=peoplesImages.id,linksId=key,url=value)
+#         db.session.add(url)
+#         db.session.commit()

@@ -5,10 +5,11 @@
 #Analyzer
 #Add Users
 
-from flask import Blueprint,render_template,request
+from flask import Blueprint,render_template,request,json
 from project.controllers.admin import login_required
-from project.controllers.analyzer import create_path,deleteVideos,captureFrames,deleteFramesFaces,compareFaces
+from project.controllers.analyzer import create_path,deleteVideos,captureFrames,deleteFramesFaces,compareFaces,saveEncodings,unknownFaces
 import time
+import pickle
 panel=Blueprint('dashboard',__name__,url_prefix='/dashboard',static_folder='../static',static_url_path="/static")
 
 @panel.route('/')
@@ -56,3 +57,9 @@ def capture():
 def compare():
     if request.method=="GET":
         return compareFaces()
+
+@panel.route('/unknown',methods=['GET'])
+@login_required
+def config():
+    ff=unknownFaces()
+    return json.dumps({'result':ff})
