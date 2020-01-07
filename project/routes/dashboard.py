@@ -5,11 +5,10 @@
 #Analyzer
 #Add Users
 
-from flask import Blueprint,render_template,request,json
+from flask import Blueprint,render_template,request,json,make_response
 from project.controllers.admin import login_required
 from project.controllers.analyzer import create_path,deleteVideos,captureFrames,deleteFramesFaces,compareFaces,saveEncodings,unknownFaces
-import time
-import pickle
+import time,os,pdfkit
 panel=Blueprint('dashboard',__name__,url_prefix='/dashboard',static_folder='../static',static_url_path="/static")
 
 @panel.route('/')
@@ -32,6 +31,7 @@ def profile():
 def create():
     return render_template("user_registration.html")
 
+#uses as both post and get
 @panel.route('/analyzer',methods=["GET","POST"])
 @login_required
 def analyze():
@@ -44,7 +44,7 @@ def analyze():
         videoData.save(path)
         return str(res)
     return render_template("analyze.html")
-
+##Begning API
 @panel.route('/capture',methods=["GET"])
 @login_required
 def capture():
@@ -63,3 +63,23 @@ def compare():
 def config():
     ff=unknownFaces()
     return json.dumps({'result':ff})
+## END
+
+@panel.route('/pdf',methods=["POST"])
+@login_required
+def pdf():
+        count=len(os.listdir('project/static/images/frames'))
+        persons=json.loads(request.form["person"])
+        unknowns=len(json.loads(request.form["unknown"])['result'])
+
+        template=render_template('PDF.html',count=count,persons=persons,unknowns=unknowns)
+        config = pdfkit.configuration(wkhtmltopdf=bytes("C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe", 'utf8'))
+
+        options = {
+            'encoding': 'base64'
+        }
+        path='project/static/pdfs/report.pdf'
+        pdf=pdfkit.from_string(template,path,configuration=config,options=options)
+        return "1"
+
+

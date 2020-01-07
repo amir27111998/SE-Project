@@ -39,22 +39,23 @@ def captureFrames(filename):
     id=json.loads(session["USER"])['id']
     db.session.add(Logs(userID=id))
     db.session.commit()
-    img=0;counter=10;faces=0
+    img=0;counter=0;faces=0
     classifier = cv2.CascadeClassifier("project/haarcascade_frontalface_default.xml")
+    fps = int(round(video.get(cv2.CAP_PROP_FPS)))*2
     listImg={}
     while video.isOpened():
         ret,frame=video.read()
         if frame is None:
             break
         else:
-            if counter==0:
+            if counter%fps==0:
                 gray=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
                 ff=classifier.detectMultiScale(gray,1.3,4)
                 if ff != ():
                     name="{}.jpg".format(img)
                     fullpath = path+name
                     for x,y,w,h in ff:
-                        if faces%10==0:
+                        if faces%3==0:
                             cropped=cv2.resize(frame[y:y+h,x:x+w],(120,120))
                             cv2.imwrite(facespath+"{}.jpg".format(faces),cropped)
                         faces+=1
@@ -62,8 +63,7 @@ def captureFrames(filename):
                     cv2.imwrite(fullpath,frame)
                     listImg[img]=name
                     img+=1
-                counter=10
-            counter-=1
+            counter+=1
     video.release()
     return json.dumps(listImg)
 

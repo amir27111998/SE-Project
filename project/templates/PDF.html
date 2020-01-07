@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PDF</title>
+    <!-- Favicon -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+
+</head>
+<body>
+    <div class="container-fluid jumbotron ">
+        <div class="container-fluid">
+            <div class="row">
+            <h1 class="text-dark">ANALYSIS REPORT</h1>
+            <br/>
+            </div>
+            <div class="row">
+                <h5 style="font-size:20px;">Summarizing the faces and compare these faces with dataset containing the peoples images.</h5>
+            </div>
+            </div>
+        <br/>
+        <div class="container-fluid">
+            <div class="row">
+            <h3 class="text-dark">TOTAL FRAMES <label class="badge badge-danger badge-pill">{{count}}</label> </h3>
+            <br/>
+            </div>
+
+            <div class="row">
+            <h3 class="text-dark">KNOWN PERSONS</h3>
+            </div>
+            <div class="row">
+                {% if persons %}
+                          {% for value in persons %}
+                <div class="col">
+                    <div class="card">
+
+                        <div class="card-body">
+                            <h2 class="text-danger">{{persons[value][1]}}</h2>
+                        </div>
+
+                    </div>
+                </div>
+                {%endfor%}
+                {% else %}
+                <div class="col">
+                    <div class="card">
+
+                        <div class="card-body">
+                            <h2 class="text-danger">No Records To Show</h2>
+                        </div></div></div>
+                {% endif %}
+
+            </div>
+            <br/>
+
+             <div class="row">
+            <h3 class="text-dark">UNKNOWNS</h3>
+            </div>
+            <div class="row">
+
+                <div class="col">
+                    <div class="card">
+
+                        <div class="card-body">
+                            {% if unknowns %}
+                            <h2 class="text-danger">Found {{unknowns}}</h2>
+                            {% else %}
+                            <h2 class="text-danger">No Records To Show</h2>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+             <div class="row mt-5 p-3">
+
+                <div class="col">
+                    <div class="card bg-warning">
+
+                        <div class="card-body">
+
+                            <h4 class="text-dark"><strong>Note: </strong>This is not perfect prediction but approximately equal to it.</h4>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+            </div>
+
+
+
+
+        </div>
+</body>
+</html>
