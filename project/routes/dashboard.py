@@ -5,10 +5,11 @@
 #Analyzer
 #Add Users
 
-from flask import Blueprint,render_template,request,json,make_response
+from flask import Blueprint,render_template,request,json,make_response,session
 from project.controllers.admin import login_required
 from project.controllers.analyzer import create_path,deleteVideos,captureFrames,deleteFramesFaces,compareFaces,saveEncodings,unknownFaces
 import time,os,pdfkit
+from project.controllers.dashboard import gettingTheUseage
 panel=Blueprint('dashboard',__name__,url_prefix='/dashboard',static_folder='../static',static_url_path="/static")
 
 @panel.route('/')
@@ -82,4 +83,9 @@ def pdf():
         pdf=pdfkit.from_string(template,path,configuration=config,options=options)
         return "1"
 
-
+@panel.route('/uses',methods=["GET"])
+@login_required
+def dashboardData():
+    id = json.loads(session.get("USER"))["id"]
+    logs = gettingTheUseage(id)
+    return json.dumps(logs)

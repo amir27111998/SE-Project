@@ -979,6 +979,8 @@ var OrdersChart = (function() {
   // Init chart
   function initChart($chart) {
 
+
+
     // Create chart
     var ordersChart = new Chart($chart, {
       type: 'bar',
@@ -1034,6 +1036,9 @@ var OrdersChart = (function() {
 
   // Init chart
   if ($chart.length) {
+
+
+
     initChart($chart);
   }
 
@@ -1060,6 +1065,18 @@ var SalesChart = (function() {
 
   function init($chart) {
 
+ $.ajax({
+    url:'/dashboard/uses',
+    type:'GET',
+    success:function(res){
+    var data=JSON.parse(res);
+    var labels=[];var values=[];
+    $.each(data.log,function(ind,val){
+        labels.push(val[0]);
+        values.push(val[1]);
+   });
+
+
     var salesChart = new Chart($chart, {
       type: 'line',
       options: {
@@ -1072,8 +1089,8 @@ var SalesChart = (function() {
             },
             ticks: {
               callback: function(value) {
-                if (!(value % 10)) {
-                  return '$' + value + 'k';
+                if (!(value % 20)) {
+                  return  value;
                 }
               }
             }
@@ -1090,17 +1107,17 @@ var SalesChart = (function() {
                 content += '<span class="popover-body-label mr-auto">' + label + '</span>';
               }
 
-              content += '<span class="popover-body-value">$' + yLabel + 'k</span>';
+              content += '<span class="popover-body-value">'+ yLabel +'</span>';
               return content;
             }
           }
         }
       },
       data: {
-        labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        labels: labels,
         datasets: [{
-          label: 'Performance',
-          data: [0, 20, 10, 30, 15, 40, 20, 60, 60]
+          label: 'Usage',
+          data: values
         }]
       }
     });
@@ -1109,9 +1126,23 @@ var SalesChart = (function() {
 
     $chart.data('chart', salesChart);
 
-  };
 
 
+
+
+
+
+
+    },
+    error:function(err){
+      console.log(err);
+    }
+});
+
+
+
+
+}
   // Events
 
   if ($chart.length) {

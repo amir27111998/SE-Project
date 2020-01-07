@@ -65,6 +65,7 @@ class Peoples(db.Model):
     email=db.Column(db.Text(40))
     description=db.Column(db.Text(500))
     phone=db.Column(db.String(25))
+    created_at=db.Column(db.DateTime(),unique=True)
     images=db.relationship('Images',backref='peoples',uselist=False)
     links=db.relationship('Links',secondary=PeopleLinks)
 
