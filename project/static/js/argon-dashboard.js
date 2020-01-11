@@ -979,29 +979,38 @@ var OrdersChart = (function() {
   // Init chart
   function initChart($chart) {
 
+ $.ajax({
+        url:'/dashboard/expansion',
+        type:'GET',
+        success:function(response){
+        var data=JSON.parse(response).growth;
+        var labels=[];var values=[];
 
+        $.each(data,function(ind,users){
+            labels.push(users[0]);
+            values.push(users[1]);
+        });
 
-    // Create chart
+                    // Create chart
     var ordersChart = new Chart($chart, {
       type: 'bar',
       options: {
         scales: {
           yAxes: [{
             gridLines: {
-              lineWidth: 1,
-              color: '#dfe2e6',
-              zeroLineColor: '#dfe2e6'
+              lineWidth: 1
             },
             ticks: {
               callback: function(value) {
-                if (!(value % 10)) {
-                  //return '$' + value + 'k'
-                  return value
+                if (!(value%20)) {
+                  return  value;
                 }
               }
             }
           }]
-        },
+        }},
+
+
         tooltips: {
           callbacks: {
             label: function(item, data) {
@@ -1018,20 +1027,40 @@ var OrdersChart = (function() {
               return content;
             }
           }
-        }
-      },
+        },
       data: {
-        labels: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        labels: labels,
         datasets: [{
           label: 'Sales',
-          data: [25, 20, 30, 22, 17, 29]
+          data: values
         }]
       }
     });
 
     // Save to jQuery object
     $chart.data('chart', ordersChart);
+
+
+
+
+        },
+        error:function(err){
+            console.log(err);
+        }
+    });
+
+
+
+
+
+
+
+
+
   }
+
+
+
 
 
   // Init chart

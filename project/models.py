@@ -1,5 +1,7 @@
 from flask import json
 from project import db
+from datetime import datetime
+
 class Role(db.Model):
     __tablename__="roles"
     id=db.Column(db.Integer,primary_key=True)
@@ -20,6 +22,7 @@ class User(db.Model):
     image=db.Column(db.Text(50),nullable=False)
     address=db.Column(db.Text(40),nullable=False)
     status=db.Column(db.Boolean(),nullable=False)
+    created_at=db.Column(db.DateTime(),nullable=False,default=datetime.now())
     role_id=db.Column(db.Integer,db.ForeignKey('roles.id'),nullable=False)
     logs=db.relationship('Logs',backref='users')
 
