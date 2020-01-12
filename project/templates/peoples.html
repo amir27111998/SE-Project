@@ -1,0 +1,48 @@
+{%extends "Master.html"%}
+{% block title %}Peoples{% endblock %}
+{% block content %}
+    <!-- Header -->
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+
+    </div>
+    <div class="container-fluid mt--9">
+      <!-- Table -->
+
+      <!-- Dark table -->
+      <div class="row mt-5">
+        <div class="col">
+          <div class="card bg-default shadow">
+            <div class="card-header bg-transparent border-0">
+              <h3 class="text-white mb-0">List of Known Peoples</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="table align-items-center table-dark table-flush">
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">FULL NAME</th>
+                    <th scope="col">EMAIL</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                {%for people in peoples%}
+                  <tr>
+                    <td>{{people.id}}</td>
+                    <td>{{people.fullname}}</td>
+                    <td>{{people.email}}</td>
+                    <td>{{people.phone}}</td>
+
+                    <td><a href="/dashboard/peoples?id={{people.id}}" class="btn btn-danger">view</a> </td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+  </div>
+ {% endblock %}

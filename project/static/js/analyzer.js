@@ -115,7 +115,7 @@
                                         <div class='card-footer'>
                                           <center>
                                           <p class='text-dark'>`+value[1]+`</p>
-                                          <a href='/peopleProfile?id=`+value[0]+`' class='btn btn-outline-primary'>View Profile</a>
+                                          <a href='/dashboard/peoples?id=`+value[0]+`' class='btn btn-outline-primary'>View Profile</a>
                                             </center>
                                         </div>
 

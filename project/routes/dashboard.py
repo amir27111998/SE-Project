@@ -5,15 +5,28 @@
 #Analyzer hogya
 #Add Users ali karraha hai
 
-from flask import Blueprint,render_template,request,json,session
+from flask import Blueprint,render_template,request,json,session,abort
 from project.controllers.admin import login_required
 from project.controllers.analyzer import create_path,deleteVideos,captureFrames,deleteFramesFaces,compareFaces,unknownFaces
 import time,os,pdfkit
 from project.controllers.dashboard import gettingTheUseage,getALLUsers,getOneDayTraffic,gettingSystemGrowth
+from project.models import Peoples,Links,PeopleLinks
+from project import db
+
 panel=Blueprint('dashboard',__name__,url_prefix='/dashboard',static_folder='../static',static_url_path="/static")
 
+###Mini Controller
 def userData():
     return json.loads(session.get("USER"))
+
+def listingLinks(peoples):
+    p={};links=[]
+    for k in peoples:
+        p=k[0]
+        links.append([k[2],k[3]])
+    return (p,links)
+##End
+
 @panel.route('/')
 @login_required
 def index():
@@ -22,11 +35,25 @@ def index():
     users = getALLUsers(user["id"])
     return render_template('dashboard.html',user=user,usersList=users,traffic=traffic)
 
-@panel.route('/peoples')
+@panel.route('/peoples',methods={'GET'})
 @login_required
 def peoples():
     user = userData()
-    return render_template('tables.html',user=user)
+    try:
+        id=request.args.get('id')
+        if not id:
+            peoples = Peoples.query.all()
+            return render_template('peoples.html', user=user, peoples=peoples)
+        elif len(Peoples.query.filter(Peoples.id==id).all()) < 1:
+            abort(404)
+        people = db.session.query(Peoples,PeopleLinks).join(PeopleLinks,Peoples.id==PeopleLinks.c.peoplesId).filter(Peoples.id==id).all()
+        p, links = listingLinks(people)
+        if p=={}:
+            p=Peoples.query.filter_by(id=id).first()
+        return render_template("peopledetail.html", user=user,people=p, links=links)
+    except:abort(404)
+
+
 
 @panel.route('/profile')
 @login_required

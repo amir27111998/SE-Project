@@ -20,9 +20,9 @@ def get_hash_password(password):
 
 def login_required(f):
     @wraps(f)
-    def wrap():
+    def wrap(*args,**kwargs):
         if session.get('USER'):
-            return f()
+            return f(*args,**kwargs)
         else:
             return redirect('/')
 

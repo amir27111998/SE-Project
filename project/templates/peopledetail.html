@@ -1,0 +1,79 @@
+{% extends "Master.html" %}
+{% block title %}Detail{% endblock %}
+{% block content %}
+
+<!-- Header -->
+    <div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center" style="min-height: 400px;">
+      <!-- Mask -->
+      <span class="mask bg-gradient-primary opacity-8"></span>
+
+    </div>
+
+
+
+
+<div class="col-xl-10 offset-xl-1 mb-5 mb-xl-0 mt--9">
+          <div class="card card-profile shadow">
+            <div class="row justify-content-center">
+              <div class="col-lg-3 order-lg-2">
+                <div class="card-profile-image">
+                  <a href="#">
+                    <img src="static/images/peoples/{{people.id}}.jpg" height="200" width="160" class="img-thumbnail">
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="card-header text-center ">
+
+            </div>
+            <div class="card-body {%if links!=[]%} mt-5{% endif %} pt-md-4">
+              <div class="row">
+                <div class="col">
+                  <div class="card-profile-stats d-flex justify-content-center mt-md-5">
+                    {% for link in links %}
+                    <div>
+                      <a href="{{link[1]}}" target="_blank">
+                          <img src="static/images/social/{{link[0]}}.jpg"  height="50" width="50" style="box-shadow: 0px 0px 12px 0px rgba(0,0,0,0.71);"/>
+                      </a>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+
+              <div class="text-center">
+                <h3>
+                  {{people.fullname}}
+                </h3>
+
+
+                <div class="h5 mt-4">
+                  {{people.email}}
+                </div>
+                <div>
+
+                  <i class="ni education_hat mr-2"></i>{{people.phone}}
+                </div>
+                <hr class="my-4" />
+                <p>{{people.description}}</p>
+
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
