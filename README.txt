@@ -9,7 +9,7 @@ libraries
 6.flask_migrate
 7.flask_sqlalchemy
 
-commands
+commands...
 *cd to_project_directory
 *flask db init
 *flask db migrate
