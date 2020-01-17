@@ -75,7 +75,7 @@ def profile():
             path = pathForImage(form.email.data)
             image_file = form.picture.data
             image_file.save(path)
-        anotherUser =  User.query.filter_by(email=form.email.data).first()
+        anotherUser =  User.query.filter_by(email=form.email.data and id != user['id'] ).first()
         if anotherUser:
             flash("Email has already been taken")
             
