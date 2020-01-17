@@ -27,7 +27,7 @@
               <div class="col-lg-3 order-lg-2">
                 <div class="card-profile-image">
                   <a href="#">
-                    <img src={{image_file}} class="rounded-circle">
+                    <img src={{image_file}} class="rounded-circle" style="height:200px;width:200px;">
                   </a>
                 </div>
               </div>
@@ -99,7 +99,7 @@
                     <div class="col-lg-6">
                       <div class="form-group">
                         <label class="form-control-label" for="input-last-name">Designation</label>
-                        {{form.designation(class_='form-control',placholder=form.designation.label.text)}}
+                        {{form.designation(class_='form-control',readonly=true,placholder=form.designation.label.text)}}
                       </div>
                     </div>
                   </div>
@@ -166,7 +166,7 @@
                     <div class="col">
                     <div class="pl-lg-4">
                     <div class="form-group">
-                            
+
                         {% with messages = get_flashed_messages()%}
                           {% if messages %}
                             {% for message in messages %}
