@@ -75,22 +75,14 @@ def profile():
             path = pathForImage(form.email.data)
             image_file = form.picture.data
             image_file.save(path)
-<<<<<<< HEAD
+
         # anotherUser =  User.query.filter_by(email=form.email.data).first()
         # if anotherUser:
         #     flash("Email has already been taken")
         #
         #
         # else:
-=======
-        anotherUser =  User.query.filter_by(email=form.email.data and id != user['id'] ).first()
-        if anotherUser:
-            flash("Email has already been taken")
-            
-
-        else:  
->>>>>>> d5a3a6bf4bd80509a7563b5ecaa5074fce9db5bb
-
+        
             users = User.query.filter_by(id=user['id']).first()
             users.name = form.username.data
             users.password =get_hash_password(form.password.data)
