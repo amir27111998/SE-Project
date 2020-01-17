@@ -5,12 +5,15 @@
 #Analyzer hogya
 #Add Users ali karraha hai
 
-from flask import Blueprint,render_template,request,json,session,abort
+from flask import Blueprint,render_template,request,json,session,abort,flash
 from project.controllers.admin import login_required
 from project.controllers.analyzer import create_path,deleteVideos,captureFrames,deleteFramesFaces,compareFaces,unknownFaces
 import time,os,pdfkit
+from project.forms.updateAccount import updateAccountForm
 from project.controllers.dashboard import gettingTheUseage,getALLUsers,getOneDayTraffic,gettingSystemGrowth
-from project.models import Peoples,Links,PeopleLinks
+from project.models import Peoples,Links,PeopleLinks,User
+from project.controllers.admin import get_hash_password
+
 from project import db
 
 panel=Blueprint('dashboard',__name__,url_prefix='/dashboard',static_folder='../static',static_url_path="/static")
@@ -26,7 +29,11 @@ def listingLinks(peoples):
         links.append([k[2],k[3]])
     return (p,links)
 ##End
+def pathForImage(email):
 
+    path=os.path.abspath("project/static/images/profile_pics/")
+    fullpath=os.path.join(path,str(email)+".jpg")
+    return fullpath
 @panel.route('/')
 @login_required
 def index():
@@ -55,11 +62,50 @@ def peoples():
 
 
 
-@panel.route('/profile')
+@panel.route('/profile',methods={'GET','POST'})
 @login_required
 def profile():
+    form = updateAccountForm()
     user = userData()
-    return render_template("profile.html",user=user)
+    
+    if form.validate_on_submit():
+        if form.picture.data:
+        
+          #  deleteImage(session['email'])
+            path = pathForImage(form.email.data)
+            image_file = form.picture.data
+            image_file.save(path)
+        anotherUser =  User.query.filter_by(email=form.email.data).first()
+        if anotherUser:
+            flash("Email has already been taken")
+            
+
+        else:  
+
+            users = User.query.filter_by(id=user['id']).first()
+            users.name = form.username.data
+            users.password =get_hash_password(form.password.data)
+            users.email = form.email.data
+            users. phone = form.phoneNo.data
+            
+            users.address = form.address.data
+            db.session.commit()
+
+            
+    
+
+    elif request.method == 'GET':
+        form.username.data = user['name']
+        form.email.data = user['email']
+        form.password.data = user['password']
+        form.designation.data = str(user)
+        form.phoneNo.data = user['phone']
+        form.address.data = user['address']    
+
+    # fullpath=os.path.join("project/static/images/profile_pics/alisyedamir2018@gmail.com.jpg",str(session['email'])+".jpg")
+    image_file = "static/images/profile_pics/"+str(user['email'])+".jpg"
+    return render_template("profile.html",form = form,image_file=image_file,user = user)
+   
 
 @panel.route('/create')
 @login_required
