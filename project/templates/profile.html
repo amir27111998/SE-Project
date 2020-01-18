@@ -170,7 +170,9 @@
                         {% with messages = get_flashed_messages()%}
                           {% if messages %}
                             {% for message in messages %}
-                              <p><font color = "red">{{ message }}</font></p>
+                              <p><font color = "red">{{ message }}</font>
+
+                              </p>
                             {% endfor %}
                           {% endif %}
                         {% endwith %}
