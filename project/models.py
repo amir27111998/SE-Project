@@ -28,7 +28,7 @@ class User(db.Model):
 
     def __repr__(self):
         data={
-            
+            'id':self.id,
             'name':self.name,
             'password':self.password,
             'email':self.email,
