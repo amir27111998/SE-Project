@@ -18,7 +18,7 @@ def get_hash_password(password):
     hashPassword=hashlib.md5((password+''+str(len(password))+''+salt).encode())
     return  str(hashPassword.hexdigest())
 
-def login_required(f):
+def login_required(f):      #decorator function
     @wraps(f)
     def wrap(*args,**kwargs):
         if session.get('USER'):

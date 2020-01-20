@@ -69,18 +69,19 @@ def profile():
     user = userData()
     
     if form.validate_on_submit():
-        if form.picture.data:
         
-          #  deleteImage(session['email'])
-            path = pathForImage(form.email.data)
-            image_file = form.picture.data
-            image_file.save(path)
         anotherUser =  User.query.filter_by(email=form.email.data and id != user['id'] ).first()
         if anotherUser:
             flash("Email has already been taken")
             
 
-        else:  
+        else: 
+            if form.picture.data:
+        
+          #  deleteImage(session['email'])
+                path = pathForImage(form.email.data)
+                image_file = form.picture.data
+                image_file.save(path) # over writing image
 
             users = User.query.filter_by(id=user['id']).first()
             users.name = form.username.data

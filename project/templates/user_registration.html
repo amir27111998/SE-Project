@@ -24,35 +24,36 @@
                   </div>
                 </div>
                 <div class="card-body">
-                  <form>
+                  <form action="{{url_for('dashboard.create')}}" method="post" role="form" enctype="multipart/form-data">
+                {{form.hidden_tag()}}
                     <h6 class="heading-small text-muted mb-4">User information</h6>
                     <div class="pl-lg-4">
                       
                       <div class="row">
                         <div class="col">
                           <div class="form-group">
-                            <label class="form-control-label" for="input-first-name">First name</label>
-                            <input type="text" id="input-first-name" class="form-control form-control-alternative" placeholder="First name" value="Lucky">
+                            <label class="form-control-label" for="input-first-name">Username</label>
+                            {{form.username(class_='form-control',placeholder=form.username.label.text)}}
                           </div>
                         </div>
                         <div class="col-lg-6">
                           <div class="form-group">
-                            <label class="form-control-label" for="input-last-name">Last name</label>
-                            <input type="text" id="input-last-name" class="form-control form-control-alternative" placeholder="Last name" value="Jesse">
+                            <label class="form-control-label" for="input-last-name">Designation</label>
+                            {{form.designation(class_='form-control',placeholder=form.designation.label.text)}}
                           </div>
                         </div>
                       </div>
                       <div class="row">
                         <div class="col">
                           <div class="form-group">
-                            <label class="form-control-label" for="input-username">Username</label>
-                            <input type="text" id="input-username" class="form-control form-control-alternative" placeholder="Username" value="lucky.jesse">
+                            <label class="form-control-label" for="input-username">Email address</label>
+                            {{form.email(class_='form-control',placeholder=form.email.label.text)}}
                           </div>
                         </div>
                         <div class="col">
                           <div class="form-group">
-                            <label class="form-control-label" for="input-email">Email address</label>
-                            <input type="email" id="input-email" class="form-control form-control-alternative" placeholder="jesse@example.com">
+                            <label class="form-control-label" for="input-email">Password</label>
+                            {{form.password(class_='form-control',placeholder=form.password.label.text)}}password
                           </div>
                         </div>
 
@@ -60,17 +61,12 @@
                       </div>
                       <div class="row">
 
-                        <div class="col">
-                            <div class="form-group">
-                              <label class="form-control-label" for="input-pass">Password</label>
-                              <input type="password" id="input-pass" class="form-control form-control-alternative" placeholder="jesse@example.com">
-                            </div>
-                          </div>
+                        
 
                           <div class="col">
                             <div class="form-group">
                               <label class="form-control-label" for="input-role">Role</label>
-                              <select class="form-control form-control-alternative">
+                              <select class="form-control form-control-alternative" id="role" name = "role">
                                     <option value="1" class="form-control">Admin</option>
                                     <option value="2">User</option>
                               </select>
@@ -84,10 +80,14 @@
                         <div class="col">
                             <div class="form-group">
                                 <label class="form-control-label" for="userImage">Upload An Image</label>
-                                <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="userImage" lang="en">
-                                    <label class="custom-file-label" for="customFileLang">Select file</label>
-                                </div>
+                                 
+                                {{ form.picture(class_='form-control-file') }}
+                                {% if form.picture.errors %}
+                                    {% for error in form.picture.errors %}
+                                        <span class="text-danger">{{ error }} </span></br>
+                                    {% endfor %}
+                                {% endif %}
+                            
                               </div>
                           </div>
                     </div>
@@ -101,13 +101,13 @@
                         <div class="col">
                           <div class="form-group">
                             <label class="form-control-label" for="input-address">Address</label>
-                            <input id="input-address" class="form-control form-control-alternative" placeholder="Home Address" value="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09" type="text">
+                            {{form.address(class_='form-control',placeholder=form.address.label.text)}}
                           </div>
                         </div>
                         <div class="col-lg-4">
                             <div class="form-group">
                               <label class="form-control-label" for="input-city">Cell No</label>
-                              <input type="text" id="input-city" class="form-control form-control-alternative" placeholder="03##-#######">
+                              {{form.phoneNo(class_='form-control',placeholder=form.phoneNo.label.text)}}
                             </div>
                           </div>
                       </div>
@@ -118,9 +118,7 @@
                         <div class="col">
                         <div class="pl-lg-4">
                         <div class="form-group text-center">
-                                
-                            <input type="submit" class="btn btn-primary pl-8 pr-8" value="Create User" />
-                        
+                            {{form.submit(class_='btn btn-primary pl-8 pr-8')}}
                         </div>
                         </div>
                         </div>
