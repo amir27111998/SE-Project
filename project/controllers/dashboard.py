@@ -21,7 +21,7 @@ def getOneDayTraffic():
     return len(logs)
 
 def gettingSystemGrowth(id):
-    sys=db.engine.execute("SELECT MonthName(created_at) as 'month',COUNT(*) as 'count' FROM `peoples` where id!={} group by Month(created_at) order by Month(created_at) desc limit 6".format(id))
+    sys=db.engine.execute("SELECT MonthName(created_at) as 'month',COUNT(*) as 'count' FROM `peoples` group by Month(created_at) order by Date(created_at) limit 6".format(id))
     sysUsers=[]
     for k in sys:
         sysUsers.append([k.month,k.count])

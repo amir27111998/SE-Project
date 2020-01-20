@@ -11,7 +11,7 @@ from project.controllers.analyzer import create_path,deleteVideos,captureFrames,
 import time,os,pdfkit
 from project.forms.updateAccount import updateAccountForm
 from project.controllers.dashboard import gettingTheUseage,getALLUsers,getOneDayTraffic,gettingSystemGrowth
-from project.models import Peoples,Links,PeopleLinks,User
+from project.models import Peoples,PeopleLinks,User,Role
 from project.controllers.admin import get_hash_password
 
 from project import db
@@ -69,6 +69,7 @@ def profile():
     user = userData()
     
     if form.validate_on_submit():
+
         
         anotherUser =  User.query.filter_by(email=form.email.data and id != user['id'] ).first()
         if anotherUser:
@@ -83,6 +84,21 @@ def profile():
                 image_file = form.picture.data
                 image_file.save(path) # over writing image
 
+        if form.picture.data:
+
+          #  deleteImage(session['email'])
+            path = pathForImage(form.email.data)
+            image_file = form.picture.data
+            image_file.save(path)
+
+
+        # anotherUser =  User.query.filter_by(email=form.email.data).first()
+        # if anotherUser:
+        #     flash("Email has already been taken")
+        #
+        #
+        # else:
+        
             users = User.query.filter_by(id=user['id']).first()
             users.name = form.username.data
             users.password =get_hash_password(form.password.data)
@@ -99,7 +115,7 @@ def profile():
         form.username.data = user['name']
         form.email.data = user['email']
         form.password.data = user['password']
-        form.designation.data = str(user)
+        form.designation.data = Role.query.filter_by(id=user['role_id']).first().role
         form.phoneNo.data = user['phone']
         form.address.data = user['address']    
 
