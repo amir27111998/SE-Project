@@ -38,8 +38,8 @@
                         </div>
                         <div class="col-lg-6">
                           <div class="form-group">
-                            <label class="form-control-label" for="input-last-name">Designation</label>
-                            {{form.designation(class_='form-control',placeholder=form.designation.label.text)}}
+                            <label class="form-control-label" for="input-last-name">Created At</label>
+                             {{form.created_at(class_='form-control',placeholder=form.username.label.text)}}
                           </div>
                         </div>
                       </div>
@@ -107,12 +107,31 @@
                         <div class="col-lg-4">
                             <div class="form-group">
                               <label class="form-control-label" for="input-city">Cell No</label>
-                              {{form.phoneNo(class_='form-control',placeholder=form.phoneNo.label.text)}}
+                              {{form.phone(class_='form-control',placeholder=form.phone.label.text)}}
                             </div>
                           </div>
                       </div>
                       
                     </div>
+                    <div class="row">
+                    <div class="col">
+                    <div class="pl-lg-4">
+                    <div class="form-group">
+
+                        {% with messages = get_flashed_messages()%}
+                          {% if messages %}
+                            {% for message in messages %}
+                              <p><font color = "red">{{ message }}</font>
+
+                              </p>
+                            {% endfor %}
+                          {% endif %}
+                        {% endwith %}
+                    </div>
+                    </div>
+                    </div>
+                </div>
+
 
                     <div class="row">
                         <div class="col">

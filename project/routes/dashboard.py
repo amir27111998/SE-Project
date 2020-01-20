@@ -10,10 +10,11 @@ from project.controllers.admin import login_required
 from project.controllers.analyzer import create_path,deleteVideos,captureFrames,deleteFramesFaces,compareFaces,unknownFaces
 import time,os,pdfkit
 from project.forms.updateAccount import updateAccountForm
+from project.forms.createUserForm import createUserForm
 from project.controllers.dashboard import gettingTheUseage,getALLUsers,getOneDayTraffic,gettingSystemGrowth
 from project.models import Peoples,PeopleLinks,User,Role
 from project.controllers.admin import get_hash_password
-
+from datetime import datetime
 from project import db
 
 panel=Blueprint('dashboard',__name__,url_prefix='/dashboard',static_folder='../static',static_url_path="/static")
@@ -84,20 +85,6 @@ def profile():
                 image_file = form.picture.data
                 image_file.save(path) # over writing image
 
-        if form.picture.data:
-
-          #  deleteImage(session['email'])
-            path = pathForImage(form.email.data)
-            image_file = form.picture.data
-            image_file.save(path)
-
-
-        # anotherUser =  User.query.filter_by(email=form.email.data).first()
-        # if anotherUser:
-        #     flash("Email has already been taken")
-        #
-        #
-        # else:
         
             users = User.query.filter_by(id=user['id']).first()
             users.name = form.username.data
@@ -124,11 +111,44 @@ def profile():
     return render_template("profile.html",form = form,image_file=image_file,user = user)
    
 
-@panel.route('/create')
+@panel.route('/create',methods = ["GET","POST"])
 @login_required
 def create():
     user = userData()
-    return render_template("user_registration.html",user=user)
+    form = createUserForm()
+    if form.validate_on_submit():
+        anotherUser =  User.query.filter_by(email=form.email.data ).first()
+        if anotherUser:
+            flash("Email has already been taken")
+        else:
+            if form.picture.data:
+        
+          #  deleteImage(session['email'])
+                path = pathForImage(form.email.data)
+                image_file = form.picture.data
+                image_file.save(path) # over writing image
+
+                data=User(
+            
+                    name =form.username.data,
+                    password=get_hash_password(form.password.data),
+                    email=form.email.data,
+                    phone=form.phone.data,
+                    image=form.email.data,
+                    address=form.address.data,
+                    status=1,
+                    role_id=request.form.get('role')
+                )
+                db.session.add(data)
+                db.session.commit()
+            else:
+                flash("Please select a image")
+
+
+
+    if request.method == "GET":
+        form.created_at.data = datetime.now()
+    return render_template("user_registration.html",user=user,form = form)
 
 #uses as both post and get
 @panel.route('/analyzer',methods=["GET","POST"])
