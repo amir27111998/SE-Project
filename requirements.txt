@@ -31,7 +31,7 @@ MarkupSafe==1.1.1
 more-itertools==8.0.2
 numpy==1.18.0
 opencv-contrib-python==4.1.2.30
-opencv-python==4.1.2.30
+opencv-python==4.2.0.32
 pdfkit==0.6.1
 Pillow==6.2.1
 pycparser==2.19
